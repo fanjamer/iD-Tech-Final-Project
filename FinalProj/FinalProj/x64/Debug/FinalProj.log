@@ -1,0 +1,4 @@
+﻿  main.cpp
+c:\users\id student\desktop\jacob c\finalproj\finalproj\main.cpp(161): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  FinalProj.vcxproj -> C:\Users\iD Student\Desktop\Jacob C\FinalProj\x64\Debug\FinalProj.exe
+  FinalProj.vcxproj -> C:\Users\iD Student\Desktop\Jacob C\FinalProj\x64\Debug\FinalProj.pdb (Full PDB)
