@@ -1,28 +1,19 @@
 #include "player.h"
 
-player::player() {
-	Texture playerUp[3] = { playerUpIdle, playerUpMove1, playerUpMove2 };
+Player::Player() {
 
-	Texture playerDown[5] = { playerDownIdle1, playerDownIdle2, playerDownIdle3, playerDownMove1, playerDownMove2 };
+	maxhp = 10;
+	hp = maxhp;
 
-	Texture playerLeft[5] = { playerLeftIdle1, playerLeftIdle2, playerLeftIdle3, playerLeftMove1, playerLeftMove2 };
+	dmg = 3;
 
-	Texture playerRight[5] = { playerRightIdle1, playerRightIdle2, playerRightIdle3, playerRightMove1, playerRightMove2 };
+	attacking = false;
 
-	Texture playerMove[4][2] =
-	{
-		{ playerUp[1], playerUp[2] },
-		{ playerDown[3], playerDown[4] },
-		{ playerLeft[3], playerLeft[4] },
-		{ playerRight[3], playerRight[4] }
-	};
+	movU = false;
+	movD = false;
+	movL = false;
+	movR = false;
 
-	Texture playerIdle[4][3] =
-	{
-		{ playerUp[0], playerUp[0], playerUp[0] },
-		{ playerDown[0], playerDown[1], playerDown[2] },
-		{ playerLeft[0], playerLeft[1], playerLeft[2] },
-		{ playerRight[0], playerRight[1], playerRight[2] }
-	};
+	alive = true;
 
-};
+}

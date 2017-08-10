@@ -19,15 +19,26 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="easy_enemy.cpp" />
+    <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="hard_enemy.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="medium_enemy.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="wave.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="easy_enemy.h" />
+    <ClInclude Include="enemy.h" />
+    <ClInclude Include="hard_enemy.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="medium_enemy.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="text_img.h" />
+    <ClInclude Include="wave.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{51c69888-5f8a-46e7-bb32-b9afdde918c4}</ProjectGuid>
+    <ProjectGuid>{9178141b-5955-4a9d-aafd-ce3fab30872f}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>FinalProj</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>

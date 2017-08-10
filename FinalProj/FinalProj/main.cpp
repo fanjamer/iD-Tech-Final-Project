@@ -1,352 +1,349 @@
-#include <SFML\Graphics.hpp>
-#include "player.h"
 #include "main.h"
 using namespace sf;
 using namespace std;
 
 int main()
 {
+	RectangleShape hpBarBottom; RectangleShape hpBarTop; RectangleShape blackG;
 	///Window///
 	int screenSize[2];
 
 	screenSize[0] = 1699;
 	screenSize[1] = 867;
 
-	RenderWindow window(VideoMode(screenSize[0], screenSize[1]), "The Ghost, The Hat, And The Scarf");
+	RenderWindow window(VideoMode(screenSize[0], screenSize[1]), "The RPG");
 	window.setPosition(Vector2i(window.getPosition().x, window.getPosition().y - 50));
 
 	///Variables///
-	bool mUp = false;
-	bool mDown = false;
-	bool mLeft = false;
-	bool mRight = false;
+	easy_enemyT.loadFromFile("Textures/ge.png");
+	med_enemyT.loadFromFile("Textures/gm.png");
+	hard_enemyT.loadFromFile("Textures/gh.png");
+	impossible_enemyT.loadFromFile("Textures/gepic.png");
 
-	bool idleUp = false;
-	bool idleDown = false;
-	bool idleLeft = true;
-	bool idleRight = false;
+	gameOverFont.loadFromFile(/*resourcePath() + */"game_over.ttf"); //MAC ONLY
+	///gOver.loadFromFile("game_over.ttf"); //windows only
 
-	Texture texture;
+	waveNumberText1.setFont(gameOverFont);
+	waveNumberText1.setString("W A V E");
+	waveNumberText1.setFillColor(Color(255, 255, 255));
+	waveNumberText1.setOutlineColor(Color(0, 0, 0));
+	waveNumberText1.setOutlineThickness(1);
+	waveNumberText1.setOrigin(waveNumberText1.getLocalBounds().width / 2, waveNumberText1.getLocalBounds().height / 2);
 
-	int frame = 0;
+	waveNumberText1.setScale(1, 1);
+	waveNumberText1.setCharacterSize(90);
 
-	Texture grassTexture;
-	grassTexture.loadFromFile("Textures/grass_tile.png");
+	wave.Wave::Wave(one_easy.diff);
+	
+	waveNumberText2.setFont(gameOverFont);
+	
+	waveNumberText2.setOutlineColor(Color(255, 255, 255));
+	waveNumberText2.setFillColor(Color(0, 0, 0));
+	waveNumberText2.setOutlineThickness(5);
+	waveNumberText2.setOrigin(waveNumberText2.getLocalBounds().width / 2, waveNumberText2.getLocalBounds().height / 2);
+
+	waveNumberText2.setScale(1, 1);
+	waveNumberText2.setCharacterSize(90);
+
+	
+	hpBarBottom.setFillColor(Color::Red);
+	hpBarBottom.setOutlineColor(Color::White);
+	hpBarBottom.setOutlineThickness(3);
+
+	
+	hpBarTop.setFillColor(Color::Green);
+	hpBarTop.setOutlineColor(Color::White);
+	hpBarTop.setOutlineThickness(3);
+
+	
+	blackG.setSize(Vector2f(screenSize[0], screenSize[1]));
+	blackG.setFillColor(Color::Black);
+	blackG.setOutlineColor(Color::Black);
+
+	border.setFillColor(Color::Transparent);
+	border.setOutlineColor(Color::Black);
+	border.setOutlineThickness(5);
+	border.setSize(Vector2f(screenSize[0], screenSize[1]));
+	border.setPosition(0, 0);
+
+	gameOverText.setFont(gameOverFont);
+	gameOverText.setString("GAME OVER!\nRestart?\n(Y / N)");
+	gameOverText.setFillColor(Color(255, 255, 255));
+	gameOverText.setOutlineColor(Color(0, 0, 0));
+	gameOverText.setOutlineThickness(1);
+
+	gameOverText.setScale(1, 1);
+	gameOverText.setCharacterSize(100);
+	gameOverText.setOrigin(gameOverText.getLocalBounds().width / 2, gameOverText.getLocalBounds().height / 2);
+
+	playerTexture.loadFromFile(/*resourcePath() + */"Textures/char1_frames.png");
+
+	grassTexture.loadFromFile(/*resourcePath() + */"Textures/grass_tile.png");
 	grassTexture.setRepeated(true);
-
-	Sprite grassSprite;
-	grassSprite.setTexture(grassTexture);
-
-	grassSprite.setScale(2, 2);
-	grassSprite.setPosition(0, 0);
-
-	float idleTimer = 0;
-	float movementTimer = 0;
-
-	Sprite playerSprite;
-	player ghost;
-
-	{
-		{
-			{
-				ghost.playerIdle[0][0].
-					loadFromFile("Textures/up/gameSpriteU.png");
-			}
-
-			{
-				ghost.playerMove[0][0].
-					loadFromFile("Textures/up/gameSpriteUM1.png");
-				ghost.playerMove[0][1].
-					loadFromFile("Textures/up/gameSpriteUM2.png");
-			}
-		}
-
-
-		{
-			{
-				ghost.playerIdle[1][0].
-					loadFromFile("Textures/down/gameSpriteD1.png");
-				ghost.playerIdle[1][1].
-					loadFromFile("Textures/down/gameSpriteD2.png");
-				ghost.playerIdle[1][2].
-					loadFromFile("Textures/down/gameSpriteD3.png");
-			}
-
-			{
-				ghost.playerMove[1][0].
-					loadFromFile("Textures/down/gameSpriteDM1.png");
-				ghost.playerMove[1][1].
-					loadFromFile("Textures/down/gameSpriteDM2.png");
-			}
-		}
-
-
-		{
-			{
-				ghost.playerIdle[2][0].
-					loadFromFile("Textures/left/gameSpriteL1.png");
-				ghost.playerIdle[2][1].
-					loadFromFile("Textures/left/gameSpriteL2.png");
-				ghost.playerIdle[2][2].
-					loadFromFile("Textures/left/gameSpriteL3.png");
-			}
-
-			{
-				ghost.playerMove[2][0].
-					loadFromFile("Textures/left/gameSpriteLM1.png");
-				ghost.playerMove[2][1].
-					loadFromFile("Textures/left/gameSpriteLM2.png");
-			}
-		}
-
-
-		{
-			{
-				ghost.playerIdle[3][0].
-					loadFromFile("Textures/right/gameSpriteR1.png");
-				ghost.playerIdle[3][1].
-					loadFromFile("Textures/right/gameSpriteR2.png");
-				ghost.playerIdle[3][2].
-					loadFromFile("Textures/right/gameSpriteR3.png");
-			}
-
-			{
-				ghost.playerMove[3][0].
-					loadFromFile("Textures/right/gameSpriteRM1.png");
-				ghost.playerMove[3][1].
-					loadFromFile("Textures/right/gameSpriteRM2.png");
-			}
-		}
-	}
-	//Player textures, condenced for your viewing convenience.
-	playerSprite.setScale(2, 2);
-	playerSprite.setOrigin(Vector2f(16, 16));
-	playerSprite.setPosition(Vector2f(100, 100));
-
-	Sprite log[4];
-
-	Texture logText;
-
-	{
-
-		logText.loadFromFile("Textures/log.png");
-		logText.setSmooth(true);
-
-		log[0].setTexture(logText);
-		log[0].setScale(0.75, 0.75);
-		log[0].setPosition(64, 156);
-		log[0].setTextureRect(IntRect(0, 0, 52, 52));
-
-		log[1].setTexture(logText);
-		log[1].setScale(0.75, 0.75);
-		log[1].setPosition(64, 117);
-		log[1].setTextureRect(IntRect(52, 0, 52, 52));
-
-		log[2].setTexture(logText);
-		log[2].setScale(0.75, 0.75);
-		log[2].setPosition(64, 78);
-		log[2].setTextureRect(IntRect(104, 0, 52, 52));
-
-		log[3].setTexture(logText);
-		log[3].setScale(0.75, 0.75);
-		log[3].setPosition(64, 39);
-		log[3].setTextureRect(IntRect(156, 0, 52, 52));
-	}
-	//Tree Stuff, collapsed to make program easier to read.
 
 	Clock clock;
 
+	player.sprite.setTexture(playerTexture);
+	gSprite.setTexture(grassTexture);
+
+	gSprite.setPosition(Vector2f(-screenSize[0], -screenSize[1]));
+
+	int frame = 0;
+
+	player.sprite.setScale(1.25, 1.25);
+	player.sprite.setOrigin(64, 64);
+	player.sprite.setPosition(Vector2f(screenSize[0] / 2, screenSize[1] / 2));
+	player.sprite.setTextureRect(playerDown[1]);
+
 	View camera(Vector2f(50, 50), Vector2f(100, 100));
-
 	camera.setSize(screenSize[0], screenSize[1]);
-	camera.setCenter(playerSprite.getPosition().x, playerSprite.getPosition().y);
 
-	FloatRect camRect = camera.getViewport();
+	hpBarTop.setSize(Vector2f(player.sprite.getTextureRect().width, 20)); hpBarBottom.setSize(Vector2f(player.sprite.getTextureRect().width, 20));
 
-	///Program Running While loop///
 	while (window.isOpen())
 	{
-		Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == Event::Closed)
-				window.close();
-			if (event.type == Event::KeyPressed)
-			{
-				if (event.key.code == Keyboard::W || event.key.code == Keyboard::Up)
-				{
-					mUp = true;
-					idleUp, idleDown, idleLeft, idleRight = false;
-				}if (event.key.code == Keyboard::A || event.key.code == Keyboard::Left)
-				{
-					mLeft = true;
-					idleUp, idleDown, idleLeft, idleRight = false;
-				}if (event.key.code == Keyboard::S || event.key.code == Keyboard::Down)
-				{
-					mDown = true;
-					idleUp, idleDown, idleLeft, idleRight = false;
-				}if (event.key.code == Keyboard::D || event.key.code == Keyboard::Right)
-				{
-					mRight = true;
-					idleUp, idleDown, idleLeft, idleRight = false;
-				}
+		while (player.alive) {
+			waveNumberText2.setString(to_string(wave.diff));
 
-				if (event.key.code == Keyboard::Escape)
-				{
+			//cout << hp / maxhp << endl;
+			hpBarTop.setPosition(player.sprite.getPosition().x, player.sprite.getPosition().y - 30);
+			hpBarTop.setScale(player.hp / player.maxhp, 1);
+			hpBarBottom.setPosition(player.sprite.getPosition().x, player.sprite.getPosition().y - 30);
+
+			camera.setCenter(player.sprite.getPosition().x, player.sprite.getPosition().y);
+
+			while (window.pollEvent(event))
+			{
+				if (event.type == Event::Closed)
 					window.close();
+				if (event.type == Event::KeyPressed)
+				{
+					if (event.key.code == Keyboard::W || event.key.code == Keyboard::Up)
+					{
+						player.movU = true;
+						//faceR, faceL, faceU, faceD = false; //the four '= false;' statements here are safeguards
+					}if (event.key.code == Keyboard::A || event.key.code == Keyboard::Left)
+					{
+						player.movL = true;
+						//faceR, faceL, faceU, faceD = false;
+					}if (event.key.code == Keyboard::S || event.key.code == Keyboard::Down)
+					{
+						player.movD = true;
+						//faceR, faceL, faceU, faceD = false;
+					}if (event.key.code == Keyboard::D || event.key.code == Keyboard::Right)
+					{
+						player.movR = true;
+						//faceR, faceL, faceU, faceD = false;
+					}
+
+					if (event.key.code == Keyboard::Escape)
+					{
+						window.close();
+					}
+				}
+				if (event.type == Event::KeyReleased)
+				{
+					if (event.key.code == Keyboard::W || event.key.code == Keyboard::Up)
+					{
+						player.movU = false;
+						player.sprite.setTextureRect(playerUp[1]);
+						frame = 2;
+						//faceU = true;
+					}if (event.key.code == Keyboard::A || event.key.code == Keyboard::Left)
+					{
+						player.movL = false;
+						player.sprite.setTextureRect(playerLeft[1]);
+						frame = 2;
+						//faceL = true;
+					}if (event.key.code == Keyboard::S || event.key.code == Keyboard::Down)
+					{
+						player.movD = false;
+						player.sprite.setTextureRect(playerDown[1]);
+						frame = 2;
+						//faceD = true;
+					}if (event.key.code == Keyboard::D || event.key.code == Keyboard::Right)
+					{
+						player.movR = false;
+						player.sprite.setTextureRect(playerRight[1]);
+						frame = 2;
+						//faceR = true;
+					}
 				}
 			}
-			if (event.type == Event::KeyReleased)
+
+			if (player.hp <= 0) {
+				player.alive = false;
+			}
+
+			sf::Vector2f viewCenter = camera.getCenter();
+			sf::Vector2f halfExtents = camera.getSize() / 2.0f;
+			sf::Vector2f translation = viewCenter - halfExtents;
+
+			FloatRect camRect = camera.getViewport();
+
+			camRect.left += static_cast<int>(translation.x);
+			camRect.top += static_cast<int>(translation.y);
+
+			waveNumberText1.setPosition(camRect.left + waveNumberText1.getLocalBounds().width / 3, camRect.top - waveNumberText1.getLocalBounds().height - 12);
+			waveNumberText2.setPosition(camRect.left + waveNumberText2.getLocalBounds().width * 9, camRect.top - waveNumberText2.getLocalBounds().height);
+
+			Vector2f movement(0, 0);
+			timer = clock.getElapsedTime().asSeconds();
+
+			if (player.movU)
 			{
-				if (event.key.code == Keyboard::W || event.key.code == Keyboard::Up)
+				movement.y -= 0.4f;
+				if (timer > 0.1f)
 				{
-					mUp = false;
-					idleUp = true;
-				}if (event.key.code == Keyboard::A || event.key.code == Keyboard::Left)
+					if (frame < 3) {
+						player.sprite.setTextureRect(playerUp[frame]); frame++;
+					}
+					else
+						frame = 0;
+					clock.restart();
+				}
+
+			}
+			if (player.movD)
+			{
+				movement.y += 0.4f;
+				if (timer > 0.1f)
 				{
-					mLeft = false;
-					idleLeft = true;
-				}if (event.key.code == Keyboard::S || event.key.code == Keyboard::Down)
-				{
-					mDown = false;
-					idleDown = true;
-				}if (event.key.code == Keyboard::D || event.key.code == Keyboard::Right)
-				{
-					mRight = false;
-					idleRight = true;
+					if (frame < 3) {
+						player.sprite.setTextureRect(playerDown[frame]); frame++;
+					}
+					else
+						frame = 0;
+					clock.restart();
 				}
 			}
-		}
-
-		Vector2f movement(0, 0);
-
-		if (mUp)
-		{
-			movement.y -= 0.25f;
-			idleTimer = clock.getElapsedTime().asSeconds();
-			if (idleTimer > 0.5f)
+			if (player.movL)
 			{
-				if (frame < 1)
-					frame++;
-				else
-					frame = 0;
-				clock.restart();
+				movement.x -= 0.4f;
+				if (timer > 0.1f)
+				{
+					if (frame < 3) {
+						player.sprite.setTextureRect(playerLeft[frame]); frame++;
+					}
+					else
+						frame = 0;
+					clock.restart();
+				}
 			}
-			texture = ghost.playerMove[0][frame];
-		}
-		else if (idleUp)
-		{
+			if (player.movR)
+			{
+				movement.x += 0.4f;
+				if (timer > 0.1f)
+				{
+					if (frame < 3) {
+						player.sprite.setTextureRect(playerRight[frame]); frame++;
+					}
+					else
+						frame = 0;
+					clock.restart();
+				}
+			}
+
+
+			/*if (faceU) {
+
+
+				//faceU = false;
+			}
+			else if (faceD) {
+
+
+				//faceD = false;
+			}
+			else if (faceL) {
+
+
+				//faceL = false;
+			}
+			else if (faceR) {
+
+
+				//faceR = false;
+			}*/
+
+			player.sprite.move(movement);
+
+			camera.move(movement);
+
+			window.setView(camera);
+
+
+			waveNumberText1.move(movement);
+			waveNumberText2.move(movement);
+
+			gSprite.setTextureRect(IntRect(-screenSize[0], -screenSize[1], screenSize[0]*3, screenSize[1]*3));
+
+			window.clear();
+
+			window.draw(gSprite);
+
+			window.draw(border);
+
+			window.draw(player.sprite);
+
+			window.draw(hpBarBottom);
+			window.draw(hpBarTop);
+
+			window.draw(waveNumberText1);
+			window.draw(waveNumberText2);
 			
-			texture = ghost.playerIdle[0][frame];
-		}
+			window.draw(easy_enemyT); window.draw(med_enemyT); window.draw(hard_enemyT); window.draw(impossible_enemyT);
 
-		if (mDown)
-		{
-			movement.y += 0.25f;
-			idleTimer = clock.getElapsedTime().asSeconds();
-			if (idleTimer > 0.5f)
+			window.display();
+
+		}
+		while (!player.alive) {
+			Event event;
+			while (window.pollEvent(event))
 			{
-				if (frame < 1)
-					frame++;
-				else
-					frame = 0;
-				clock.restart();
+				if (event.type == Event::Closed)
+					window.close();
+				if (event.type == Event::KeyPressed) {
+					if (event.key.code == Keyboard::Escape) {
+						window.close();
+					}
+					if (event.key.code == Keyboard::Y) {
+						player.alive = true;
+					}
+					else if (event.key.code == Keyboard::N) {
+						window.close();
+					}
+				}
+				window.draw(blackG);
+				gameOverText.setPosition(camera.getCenter().x, camera.getCenter().y);
+				window.draw(gameOverText);
+				window.display();
 			}
-			texture = ghost.playerMove[1][frame];
 		}
-		else if (idleDown)
-		{		
-			idleTimer = clock.getElapsedTime().asSeconds();
-			if (idleTimer > 0.5f)
-			{
-				if (frame < 2)
-					frame++;
-				else
-					frame = 0;
-				clock.restart();
-			}
-			texture = ghost.playerIdle[1][frame];
+		player.attacking = false;
+		player.dmg = 3;
+		player.maxhp = 10;
+		player.hp = player.maxhp;
+		if (player.movD) {
+			player.sprite.setTextureRect(playerDown[1]);
+			frame = 2;
 		}
-
-		if (mLeft)
-		{
-			movement.x -= 0.25f;
-			idleTimer = clock.getElapsedTime().asSeconds();
-			if (idleTimer > 0.5f)
-			{
-				if (frame < 1)
-					frame++;
-				else
-					frame = 0;
-				clock.restart();
-			}
-			texture = ghost.playerMove[2][frame];
+		else if (player.movU) {
+			player.sprite.setTextureRect(playerUp[1]);
+			frame = 2;
 		}
-		else if (idleLeft)
-		{
-			idleTimer = clock.getElapsedTime().asSeconds();
-			if (idleTimer > 0.5f)
-			{
-				if (frame < 2)
-					frame++;
-				else
-					frame = 0;
-				clock.restart();
-			}
-			texture = ghost.playerIdle[2][frame];
+		else if (player.movL) {
+			player.sprite.setTextureRect(playerLeft[1]);
+			frame = 2;
 		}
-
-		if (mRight)
-		{
-			movement.x += 0.25f;
-			idleTimer = clock.getElapsedTime().asSeconds();
-			if (idleTimer > 0.5f)
-			{
-				if (frame < 1)
-					frame++;
-				else
-					frame = 0;
-				clock.restart();
-			}
-			texture = ghost.playerMove[3][frame];
+		else if (player.movR) {
+			player.sprite.setTextureRect(playerRight[1]);
+			frame = 2;
 		}
-		else if (idleRight)
-		{
-			idleTimer = clock.getElapsedTime().asSeconds();
-			if (idleTimer > 0.5f)
-			{
-				if (frame < 2)
-					frame++;
-				else
-					frame = 0;
-				clock.restart();
-			}
-			texture = ghost.playerIdle[3][frame];
-		}
-
-		playerSprite.setTexture(texture);
-
-		playerSprite.move(movement);
-		camera.move(movement);
-
-		window.setView(camera);
-
-		grassSprite.setTextureRect(IntRect(0, 0, screenSize[0], screenSize[1]));
-
-		window.clear();
-
-		window.draw(grassSprite);
-
-		window.draw(log[0]);
-		window.draw(log[1]);
-		window.draw(log[2]);
-		window.draw(log[3]);
-
-		window.draw(playerSprite);
-
-		window.display();
+		player.movD = false;
+		player.movU = false;
+		player.movL = false;
+		player.movR = false;
 	}
-
-
 	return 0;
 }
