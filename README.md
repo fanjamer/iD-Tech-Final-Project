@@ -1,4 +1,4 @@
-# iD Tech Final Project (Untitled)
+# iD Tech Final Project - Monster Waves
 ---
 _Repository created: 08/06/2017_
 
@@ -7,3 +7,5 @@ _Repository created: 08/06/2017_
 * ***`main.h`***
 * ***`player.cpp`***
 * ***`player.h`***
+* ***`texture files`***
+* ***`class files`***
